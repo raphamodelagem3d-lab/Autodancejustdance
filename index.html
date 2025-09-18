@@ -1,323 +1,35 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>X Shop — X Points</title>
-  <style>
-    @font-face {
-      font-family: 'TungstenBold';
-      src: url('Tungsten-Bold.ttf') format('truetype');
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #ffedd6;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      color: #333;
-    }
-
-    header {
-      width: 100%;
-      background-color: #ffa64d;
-      padding: 20px;
-      border-bottom: 2px solid #ff9900;
-      text-align: center;
-    }
-
-    header h1 {
-      font-family: 'TungstenBold', sans-serif;
-      font-size: 2.5rem;
-      color: #fff;
-      text-shadow: 0 1px 3px rgba(255,165,0,0.6);
-    }
-
-    .balance {
-      margin: 10px 0 20px 0;
-      font-size: 1.2rem;
-      color: #bf5f00;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .music-controls {
-      text-align: center;
-      margin: 15px 0;
-    }
-
-    .music-controls button {
-      margin: 5px;
-      padding: 12px 25px;
-      background-color: #ffc97f;
-      color: #bf5f00;
-      border: 2px solid #ff9900;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-      border-radius: 0;
-      box-shadow: inset 0 0 10px rgba(255,165,0,0.3);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .music-controls button::after {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-      transform: rotate(45deg);
-      transition: transform 0.5s;
-    }
-
-    .music-controls button:hover::after {
-      transform: rotate(45deg) translate(20px, 20px);
-    }
-
-    main {
-      max-width: 1000px;
-      width: 100%;
-      padding: 10px;
-    }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
-
-    .product-card {
-      background-color: #ffc97f;
-      border: 2px solid #ff9900;
-      padding: 15px;
-      text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
-      position: relative;
-      box-shadow: inset 0 0 12px rgba(255,165,0,0.3), 0 4px 6px rgba(255,140,0,0.2);
-    }
-
-    .product-card:hover {
-      transform: translateY(-3px);
-      box-shadow: inset 0 0 18px rgba(255,165,0,0.5), 0 6px 12px rgba(255,140,0,0.3);
-    }
-
-    .product-card img {
-      width: 100%;
-      border: 2px solid #ff9900;
-      margin-bottom: 10px;
-      transition: transform 0.3s;
-    }
-
-    .product-card img:hover {
-      transform: scale(1.02);
-    }
-
-    .product-card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 5px;
-      color: #bf5f00;
-    }
-
-    .product-card p {
-      font-size: 1rem;
-      margin-bottom: 10px;
-      color: #bf5f00;
-    }
-
-    .product-card button {
-      padding: 10px 20px;
-      background-color: #ffc97f;
-      color: #bf5f00;
-      border: 2px solid #ff9900;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-      border-radius: 0;
-      box-shadow: inset 0 0 10px rgba(255,165,0,0.3);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .product-card button::after {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-      transform: rotate(45deg);
-      transition: transform 0.5s;
-    }
-
-    .product-card button:hover::after {
-      transform: rotate(45deg) translate(20px, 20px);
-    }
-
-    /* Badge "Novo" */
-    .product-card .badge {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: #ff9900;
-      color: #fff;
-      padding: 3px 8px;
-      font-size: 0.8rem;
-      font-weight: bold;
-      border-radius: 0;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-
-    .confetti {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      top: 50%;
-      left: 50%;
-      opacity: 0;
-      pointer-events: none;
-      animation: confetti-fall 1s forwards;
-      border-radius: 50%;
-    }
-
-    @keyframes confetti-fall {
-      0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-      100% { 
-        transform: translate(calc(-50px + 100px * var(--randX)), calc(-100px + 200px * var(--randY))) rotate(360deg); 
-        opacity: 0; 
-      }
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      background-color: #ffa64d;
-      border-top: 2px solid #ff9900;
-      font-size: 0.9em;
-      color: #fff;
-    }
-
-    @media(max-width: 600px){
-      .product-card h3 { font-size: 1rem; }
-      .product-card p { font-size: 0.9rem; }
-    }
-
-  </style>
+<meta charset="UTF-8">
+<title>Limpar posts antigos</title>
 </head>
 <body>
-
-<header>
-  <h1>X Shop</h1>
-</header>
-
-<div class="balance">
-  Saldo: <strong>1000 X Points</strong>
-</div>
-
-<div class="music-controls">
-  <button onclick="document.getElementById('shop-music').play()">▶️ Tocar</button>
-  <button onclick="document.getElementById('shop-music').pause()">⏸️ Pausar</button>
-  <button onclick="stopShopMusic()">⏹️ Parar</button>
-</div>
-
-<main>
-  <div class="product-grid">
-
-    <div class="product-card">
-      <div class="badge">Novo</div>
-      <img src="https://i.postimg.cc/rKqPCZwL/2-BF3-BF18-6-AC7-4-ECD-9560-8172363867-EF-1752458443086.png" 
-           alt="i want for Christmas (Beta)">
-      <h3>i want for Christmas (Beta)</h3>
-      <p>100 X Points</p>
-      <button onclick="buyProduct(this)">🛒 Comprar</button>
-    </div>
-
-    <div class="product-card">
-      <div class="badge">Novo</div>
-      <img src="https://via.placeholder.com/200x150.png?text=Produto+2" alt="Produto 2">
-      <h3>Produto 2</h3>
-      <p>50 X Points</p>
-      <button onclick="buyProduct(this)">🛒 Comprar</button>
-    </div>
-
-    <div class="product-card">
-      <div class="badge">Novo</div>
-      <img src="https://via.placeholder.com/200x150.png?text=Produto+3" alt="Produto 3">
-      <h3>Produto 3</h3>
-      <p>30 X Points</p>
-      <button onclick="buyProduct(this)">🛒 Comprar</button>
-    </div>
-
-    <div class="product-card">
-      <div class="badge">Novo</div>
-      <img src="https://via.placeholder.com/200x150.png?text=Produto+4" alt="Produto 4">
-      <h3>Produto 4</h3>
-      <p>10 X Points</p>
-      <button onclick="buyProduct(this)">🛒 Comprar</button>
-    </div>
-
-  </div>
-</main>
-
-<footer>
-  © 2025 X Shop — X Points
-</footer>
-
-<audio id="shop-music" src="Wii Shop Channel.mp3" loop></audio>
-
+<h2>Apagando posts antigos...</h2>
 <script>
-  let saldo = 1000;
-  const saldoEl = document.querySelector('.balance strong');
-  saldoEl.textContent = `${saldo} X Points`;
+const JSONBIN_URL = 'https://api.jsonbin.io/v3/b/68cb524f43b1c97be9469a7a';
+const JSONBIN_KEY = '$2a$10$tRSl.w9zvPSnAMtnGO8gVO1fZMmlHtZ8r7QKVDY.zyfu0p25IzUnC';
 
-  const shopMusic = document.getElementById("shop-music");
+(async () => {
+    try {
+        const res = await fetch(JSONBIN_URL, { headers: { 'X-Master-Key': JSONBIN_KEY } });
+        const data = await res.json();
+        let posts = data.record || [];
 
-  function stopShopMusic() {
-    shopMusic.pause();
-    shopMusic.currentTime = 0;
-  }
+        // Remove todos os posts que não têm ownerId (posts antigos)
+        posts = posts.filter(post => post.ownerId);
 
-  function buyProduct(button) {
-    const card = button.closest('.product-card');
-    const price = parseInt(card.querySelector('p').textContent);
+        await fetch(JSONBIN_URL, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
+            body: JSON.stringify(posts)
+        });
 
-    if (saldo < price) {
-      alert("Saldo insuficiente!");
-      return;
+        alert("Todos os posts antigos foram apagados!");
+    } catch (e) {
+        alert("Erro ao apagar posts: " + e.message);
     }
-
-    saldo -= price;
-    saldoEl.textContent = `${saldo} X Points`;
-
-    shopMusic.play().catch(() => console.log("Clique em ▶️ para iniciar a música."));
-
-    const audio = new Audio('Voicy_SFX 1.mp3');
-    audio.play();
-
-    for (let i = 0; i < 10; i++) {
-      const confetti = document.createElement('div');
-      confetti.classList.add('confetti');
-      confetti.style.setProperty('--randX', Math.random());
-      confetti.style.setProperty('--randY', Math.random());
-      confetti.style.backgroundColor = `hsl(30, 100%, ${50 + Math.random()*30}%)`;
-      card.appendChild(confetti);
-      setTimeout(() => confetti.remove(), 1000);
-    }
-
-    const productName = card.querySelector('h3').textContent;
-    const soundcloudLink = "https://on.soundcloud.com/3YJEN8pobEEQ54FtRw";
-
-    alert(`Você comprou ${productName}!\nOuça a música aqui: ${soundcloudLink}`);
-  }
+})();
 </script>
-
 </body>
 </html>
