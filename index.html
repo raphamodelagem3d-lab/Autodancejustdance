@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Just Dance 2017 - Web UI</title>
+    <title>Just Dance 2017 Unlimited - UI</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap');
 
         * {
             margin: 0;
@@ -16,291 +16,433 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-color: #060814;
             color: white;
             height: 100vh;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
-        /* Header / Logo */
-        header {
-            padding: 20px;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.4);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        /* --- TOP BAR --- */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 30px;
+            background: rgba(10, 15, 40, 0.8);
+            backdrop-filter: blur(10px);
             z-index: 10;
         }
 
-        .logo {
-            font-size: 3rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            background: linear-gradient(to right, #00f2fe, #4facfe, #f093fb, #f5576c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(245, 87, 108, 0.5);
-        }
-
-        /* Main Content - Carousel */
-        .main-container {
-            flex: 1;
+        .profile-section {
             display: flex;
             align-items: center;
-            justify-content: center;
-            position: relative;
+            gap: 15px;
         }
 
-        .carousel {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-            transition: transform 0.5s ease;
-        }
-
-        .song-card {
-            width: 250px;
-            height: 350px;
+        .avatar {
+            width: 50px;
+            height: 50px;
             background: #fff;
-            border-radius: 20px;
+            border-radius: 50%;
+            border: 2px solid #ffd700;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: flex-end;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: all 0.3s ease;
-            opacity: 0.5;
-            transform: scale(0.8);
+            justify-content: center;
+            font-size: 24px;
             position: relative;
-            overflow: hidden;
         }
 
-        .song-card.active {
-            opacity: 1;
-            transform: scale(1.1);
-            box-shadow: 0 0 30px #f5576c, 0 0 60px #f5576c;
-            border: 4px solid #fff;
-            z-index: 5;
+        .level-badge {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: #ffd700;
+            color: black;
+            font-size: 12px;
+            font-weight: 900;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .song-cover {
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: #a0a5c0;
+        }
+
+        .nav-links span {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-links span:hover { color: white; }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            width: 250px;
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            width: 100%;
+            margin-left: 10px;
+        }
+
+        /* --- HERO SECTION (Área da Música Selecionada) --- */
+        .hero-section {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+            background: linear-gradient(to right, #900000, #ff4500, #ff8c00); /* Cor base */
+            transition: background 0.5s ease;
+        }
+
+        /* Gradiente escuro por cima da imagem de fundo para mesclar com a UI */
+        .hero-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover;
-            background-position: center;
+            background: linear-gradient(to bottom, transparent 40%, #060814 100%),
+                        linear-gradient(to right, #060814 5%, transparent 30%, transparent 70%, #060814 95%);
             z-index: 1;
-            filter: brightness(0.7);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .song-info {
-            z-index: 2;
-            text-align: center;
-            background: rgba(0,0,0,0.7);
-            width: 100%;
-            padding: 10px;
-            border-radius: 10px;
+            flex: 1;
         }
 
-        .song-title {
-            font-weight: 900;
-            font-size: 1.2rem;
-            color: #fff;
-        }
-
-        .song-artist {
-            font-size: 0.9rem;
-            color: #00f2fe;
-            margin-top: 5px;
-        }
-
-        /* Controls */
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid white;
-            color: white;
-            font-size: 2rem;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: absolute;
-            z-index: 10;
-        }
-
-        .nav-btn:hover {
-            background: white;
-            color: #302b63;
-            box-shadow: 0 0 20px white;
-        }
-
-        .btn-left { left: 50px; }
-        .btn-right { right: 50px; }
-
-        /* Bottom Bar */
-        footer {
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .play-btn {
-            background: linear-gradient(45deg, #f5576c, #f093fb);
-            border: none;
-            padding: 15px 50px;
-            border-radius: 30px;
-            color: white;
-            font-size: 1.5rem;
+        .song-info h1 {
+            font-size: 3.5rem;
             font-weight: 900;
             text-transform: uppercase;
+            line-height: 1;
+            border-left: 5px solid white;
+            padding-left: 15px;
+            margin-bottom: 5px;
+        }
+
+        .song-info h3 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+            padding-left: 20px;
+        }
+
+        .center-logo {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .jd-logo {
+            text-align: center;
+            font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .jd-logo .just { font-size: 2rem; letter-spacing: 2px; }
+        .jd-logo .dance { font-size: 4rem; letter-spacing: -2px; }
+        .jd-logo .unlimited { font-size: 2.5rem; color: #ffd700; }
+
+        .play-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            backdrop-filter: blur(5px);
+            color: white;
+            padding: 10px 40px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 0 20px rgba(245, 87, 108, 0.6);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
+            text-transform: uppercase;
         }
 
         .play-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 40px rgba(245, 87, 108, 1);
+            background: white;
+            color: black;
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
         }
 
-        .play-btn:active {
-            transform: scale(0.95);
+        .dancers-placeholder {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            font-size: 10rem;
+            opacity: 0.9;
         }
 
-        /* Loading / Game Screen overlay */
-        .game-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: black;
-            z-index: 100;
-            display: none;
-            justify-content: center;
+        /* --- CAROUSEL (Lista de Músicas) --- */
+        .carousel-wrapper {
+            position: relative;
+            padding: 20px 0 40px 0;
+            background: #060814;
+            z-index: 5;
+            display: flex;
             align-items: center;
-            flex-direction: column;
-            color: #00f2fe;
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(0, 242, 254, 0.3);
-            border-top-color: #00f2fe;
+        .arrow-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            cursor: pointer;
+            margin: 0 20px;
+            transition: 0.2s;
+            z-index: 10;
         }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .arrow-btn:hover { background: rgba(255,255,255,0.3); }
+
+        .carousel-track {
+            display: flex;
+            gap: 15px;
+            overflow: hidden;
+            width: 100%;
+            padding: 10px;
+            scroll-behavior: smooth;
+        }
+
+        .song-card {
+            min-width: 160px;
+            height: 160px;
+            background: #2a2a4a;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .song-card .bg {
+            position: absolute;
+            top:0; left:0; width:100%; height:100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.7;
+        }
+
+        .song-card .title {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            background: rgba(0,0,0,0.7);
+            padding: 8px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        /* Cartão Ativo (Borda Neon) */
+        .song-card.active {
+            border: 3px solid #00f2fe;
+            box-shadow: 0 0 15px #00f2fe, inset 0 0 20px rgba(0, 242, 254, 0.5);
+            transform: scale(1.05);
+        }
+        .song-card.active .bg { opacity: 1; }
+
+        /* --- FOOTER --- */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: #0a0f28;
+            font-size: 0.9rem;
+            color: #a0a5c0;
+            z-index: 10;
+        }
+
+        .footer-links span {
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .footer-links span:hover { color: white; }
+
+        .btn-unlimited {
+            background: transparent;
+            border: 1px solid #a0a5c0;
+            color: #a0a5c0;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .btn-unlimited:hover { color: white; border-color: white; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">Just Dance 2017</div>
-    </header>
-
-    <div class="main-container">
-        <button class="nav-btn btn-left" onclick="moveCarousel(-1)">&#10094;</button>
-        
-        <div class="carousel" id="carousel">
-            <!-- As músicas serão injetadas via JavaScript -->
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="profile-section">
+            <div class="avatar">🐼<div class="level-badge">1</div></div>
+            <span style="font-weight:bold;">DancerPro123</span>
+            <div class="nav-links">
+                <span>👤 My Profile</span>
+                <span>⬅ Back</span>
+                <span>🏠 Home</span>
+            </div>
         </div>
-
-        <button class="nav-btn btn-right" onclick="moveCarousel(1)">&#10095;</button>
+        <div class="search-bar">
+            🔍 <input type="text" placeholder="Procurar música...">
+        </div>
     </div>
 
-    <footer>
-        <button class="play-btn" onclick="startGame()">Dançar Agora!</button>
-    </footer>
+    <!-- HERO SECTION -->
+    <div class="hero-section" id="hero-bg">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            
+            <div class="song-info">
+                <h1 id="hero-title">I Like It</h1>
+                <h3 id="hero-artist">The Blackout Allstars</h3>
+            </div>
 
-    <div class="game-overlay" id="gameOverlay">
-        <div class="spinner"></div>
-        <h2 id="loadingText">Carregando a música... Prepare-se!</h2>
-        <button style="margin-top:20px; padding: 10px 20px; border-radius: 10px; background: #fff; cursor: pointer; border:none; font-weight:bold;" onclick="closeGame()">Voltar ao Menu</button>
+            <div class="center-logo">
+                <div class="jd-logo">
+                    <div class="just">JUST</div>
+                    <div class="dance">DANCE<span style="font-size: 1.5rem">2017</span></div>
+                    <div class="unlimited">UNLIMITED</div>
+                </div>
+                <button class="play-btn" onclick="alert('Iniciando música!')">Dançar Agora! ❖</button>
+            </div>
+
+            <!-- Representação dos dançarinos -->
+            <div class="dancers-placeholder" id="hero-dancers">
+                💃🕺
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CAROUSEL -->
+    <div class="carousel-wrapper">
+        <button class="arrow-btn" onclick="scrollCarousel(-1)">❮</button>
+        
+        <div class="carousel-track" id="track">
+            <!-- Gerado via JS -->
+        </div>
+
+        <button class="arrow-btn" onclick="scrollCarousel(1)">❯</button>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div class="footer-links">
+            <span>Community</span>
+            <span>News</span>
+            <span>Support</span>
+        </div>
+        <button class="btn-unlimited">Get Unlimited</button>
     </div>
 
     <script>
-        // Lista de Músicas (Baseado no JD 2017)
+        // Dados das músicas baseados na imagem
         const songs = [
-            { title: "Sorry", artist: "Justin Bieber", color: "#f39c12" },
-            { title: "Lean On", artist: "Major Lazer & DJ Snake", color: "#e74c3c" },
-            { title: "Don't Stop Me Now", artist: "Queen", color: "#9b59b6" },
-            { title: "Cheap Thrills", artist: "Sia ft. Sean Paul", color: "#2ecc71" },
-            { title: "Single Ladies", artist: "Beyoncé", color: "#3498db" }
+            { id: "ae", title: "A-E", artist: "Playlists", color: "#d35400", bg: "linear-gradient(45deg, #f1c40f, #d35400)" },
+            { id: "fj", title: "F-J", artist: "Playlists", color: "#8e44ad", bg: "linear-gradient(45deg, #9b59b6, #2c3e50)" },
+            { id: "iwantyou", title: "I Want You", artist: "Marvin Gaye", color: "#16a085", bg: "linear-gradient(45deg, #1abc9c, #2c3e50)" },
+            { id: "ilikeit", title: "I Like It", artist: "The Blackout Allstars", color: "#c0392b", bg: "linear-gradient(to right, #900000, #ff4500, #ff8c00)" },
+            { id: "iwasmade", title: "I Was Made", artist: "KISS", color: "#2980b9", bg: "linear-gradient(45deg, #3498db, #8e44ad)" },
+            { id: "iwillsurvive", title: "I Will Survive", artist: "Gloria Gaynor", color: "#273c75", bg: "linear-gradient(45deg, #192a56, #8c7ae6)" },
+            { id: "singleladies", title: "Single Ladies", artist: "Beyoncé", color: "#7f8fa6", bg: "linear-gradient(45deg, #718093, #2f3640)" }
         ];
 
-        let currentIndex = 2; // Começa na música do meio
+        let currentIndex = 3; // Começa no "I Like It" igual a imagem
+        const track = document.getElementById('track');
 
-        const carousel = document.getElementById('carousel');
-
-        // Função para renderizar o carrossel
+        // Renderiza as opções no carrossel
         function renderCarousel() {
-            carousel.innerHTML = '';
+            track.innerHTML = '';
             songs.forEach((song, index) => {
                 const card = document.createElement('div');
                 card.className = `song-card ${index === currentIndex ? 'active' : ''}`;
+                card.onclick = () => selectSong(index);
                 
-                // Usando uma cor de fundo como "capa" da música
                 card.innerHTML = `
-                    <div class="song-cover" style="background: linear-gradient(45deg, ${song.color}, #2c3e50);"></div>
-                    <div class="song-info">
-                        <div class="song-title">${song.title}</div>
-                        <div class="song-artist">${song.artist}</div>
-                    </div>
+                    <div class="bg" style="background: ${song.bg}"></div>
+                    <div class="title">${song.title}</div>
                 `;
-                carousel.appendChild(card);
+                track.appendChild(card);
             });
+            updateHero();
         }
 
-        // Função para mover esquerda/direita
-        function moveCarousel(direction) {
-            currentIndex += direction;
-            if (currentIndex < 0) currentIndex = songs.length - 1;
-            if (currentIndex >= songs.length) currentIndex = 0;
+        // Atualiza a área principal de destaque
+        function updateHero() {
+            const song = songs[currentIndex];
+            document.getElementById('hero-title').innerText = song.title;
+            document.getElementById('hero-artist').innerText = song.artist;
+            document.getElementById('hero-bg').style.background = song.bg;
+            
+            // Rola o carrossel para manter o item selecionado visível
+            const cardWidth = 175; // largura (160) + gap (15)
+            track.scrollTo({ left: (currentIndex - 2) * cardWidth, behavior: 'smooth' });
+        }
+
+        // Clicar em um item do carrossel
+        function selectSong(index) {
+            currentIndex = index;
             renderCarousel();
-            playSfx();
         }
 
-        // Simula o som de "tick" ao trocar de música
-        function playSfx() {
-            // Em um ambiente real, você usaria new Audio('tick.mp3').play();
-            console.log("Tick - Mudou de música");
+        // Usar as setas laterais
+        function scrollCarousel(dir) {
+            currentIndex += dir;
+            if (currentIndex < 0) currentIndex = 0;
+            if (currentIndex >= songs.length) currentIndex = songs.length - 1;
+            renderCarousel();
         }
 
-        // Função para simular o início do jogo
-        function startGame() {
-            const overlay = document.getElementById('gameOverlay');
-            const loadingText = document.getElementById('loadingText');
-            overlay.style.display = 'flex';
-            
-            const selectedSong = songs[currentIndex];
-            loadingText.innerText = `Conectando controles... Preparando "${selectedSong.title}"`;
-            
-            // Simula o tempo de carregamento
-            setTimeout(() => {
-                loadingText.innerText = "Siga o treinador na tela! (Isto é apenas uma simulação Web UI)";
-            }, 3000);
-        }
-
-        function closeGame() {
-            document.getElementById('gameOverlay').style.display = 'none';
-        }
-
-        // Inicialização
-        renderCarousel();
-
-        // Suporte para setas do teclado
+        // Teclado (Setas)
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') moveCarousel(-1);
-            if (e.key === 'ArrowRight') moveCarousel(1);
-            if (e.key === 'Enter') startGame();
+            if (e.key === 'ArrowLeft') scrollCarousel(-1);
+            if (e.key === 'ArrowRight') scrollCarousel(1);
+            if (e.key === 'Enter') alert('Iniciando: ' + songs[currentIndex].title);
         });
+
+        // Iniciar
+        renderCarousel();
     </script>
 </body>
 </html>
