@@ -1,35 +1,306 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Limpar posts antigos</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Just Dance 2017 - Web UI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header / Logo */
+        header {
+            padding: 20px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #00f2fe, #4facfe, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(245, 87, 108, 0.5);
+        }
+
+        /* Main Content - Carousel */
+        .main-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .carousel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            transition: transform 0.5s ease;
+        }
+
+        .song-card {
+            width: 250px;
+            height: 350px;
+            background: #fff;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            transform: scale(0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .song-card.active {
+            opacity: 1;
+            transform: scale(1.1);
+            box-shadow: 0 0 30px #f5576c, 0 0 60px #f5576c;
+            border: 4px solid #fff;
+            z-index: 5;
+        }
+
+        .song-cover {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+            filter: brightness(0.7);
+        }
+
+        .song-info {
+            z-index: 2;
+            text-align: center;
+            background: rgba(0,0,0,0.7);
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .song-title {
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .song-artist {
+            font-size: 0.9rem;
+            color: #00f2fe;
+            margin-top: 5px;
+        }
+
+        /* Controls */
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid white;
+            color: white;
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: absolute;
+            z-index: 10;
+        }
+
+        .nav-btn:hover {
+            background: white;
+            color: #302b63;
+            box-shadow: 0 0 20px white;
+        }
+
+        .btn-left { left: 50px; }
+        .btn-right { right: 50px; }
+
+        /* Bottom Bar */
+        footer {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .play-btn {
+            background: linear-gradient(45deg, #f5576c, #f093fb);
+            border: none;
+            padding: 15px 50px;
+            border-radius: 30px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(245, 87, 108, 0.6);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(245, 87, 108, 1);
+        }
+
+        .play-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Loading / Game Screen overlay */
+        .game-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: black;
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #00f2fe;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 242, 254, 0.3);
+            border-top-color: #00f2fe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
-<h2>Apagando posts antigos...</h2>
-<script>
-const JSONBIN_URL = 'https://api.jsonbin.io/v3/b/68cb524f43b1c97be9469a7a';
-const JSONBIN_KEY = '$2a$10$tRSl.w9zvPSnAMtnGO8gVO1fZMmlHtZ8r7QKVDY.zyfu0p25IzUnC';
 
-(async () => {
-    try {
-        const res = await fetch(JSONBIN_URL, { headers: { 'X-Master-Key': JSONBIN_KEY } });
-        const data = await res.json();
-        let posts = data.record || [];
+    <header>
+        <div class="logo">Just Dance 2017</div>
+    </header>
 
-        // Remove todos os posts que não têm ownerId (posts antigos)
-        posts = posts.filter(post => post.ownerId);
+    <div class="main-container">
+        <button class="nav-btn btn-left" onclick="moveCarousel(-1)">&#10094;</button>
+        
+        <div class="carousel" id="carousel">
+            <!-- As músicas serão injetadas via JavaScript -->
+        </div>
 
-        await fetch(JSONBIN_URL, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_KEY },
-            body: JSON.stringify(posts)
+        <button class="nav-btn btn-right" onclick="moveCarousel(1)">&#10095;</button>
+    </div>
+
+    <footer>
+        <button class="play-btn" onclick="startGame()">Dançar Agora!</button>
+    </footer>
+
+    <div class="game-overlay" id="gameOverlay">
+        <div class="spinner"></div>
+        <h2 id="loadingText">Carregando a música... Prepare-se!</h2>
+        <button style="margin-top:20px; padding: 10px 20px; border-radius: 10px; background: #fff; cursor: pointer; border:none; font-weight:bold;" onclick="closeGame()">Voltar ao Menu</button>
+    </div>
+
+    <script>
+        // Lista de Músicas (Baseado no JD 2017)
+        const songs = [
+            { title: "Sorry", artist: "Justin Bieber", color: "#f39c12" },
+            { title: "Lean On", artist: "Major Lazer & DJ Snake", color: "#e74c3c" },
+            { title: "Don't Stop Me Now", artist: "Queen", color: "#9b59b6" },
+            { title: "Cheap Thrills", artist: "Sia ft. Sean Paul", color: "#2ecc71" },
+            { title: "Single Ladies", artist: "Beyoncé", color: "#3498db" }
+        ];
+
+        let currentIndex = 2; // Começa na música do meio
+
+        const carousel = document.getElementById('carousel');
+
+        // Função para renderizar o carrossel
+        function renderCarousel() {
+            carousel.innerHTML = '';
+            songs.forEach((song, index) => {
+                const card = document.createElement('div');
+                card.className = `song-card ${index === currentIndex ? 'active' : ''}`;
+                
+                // Usando uma cor de fundo como "capa" da música
+                card.innerHTML = `
+                    <div class="song-cover" style="background: linear-gradient(45deg, ${song.color}, #2c3e50);"></div>
+                    <div class="song-info">
+                        <div class="song-title">${song.title}</div>
+                        <div class="song-artist">${song.artist}</div>
+                    </div>
+                `;
+                carousel.appendChild(card);
+            });
+        }
+
+        // Função para mover esquerda/direita
+        function moveCarousel(direction) {
+            currentIndex += direction;
+            if (currentIndex < 0) currentIndex = songs.length - 1;
+            if (currentIndex >= songs.length) currentIndex = 0;
+            renderCarousel();
+            playSfx();
+        }
+
+        // Simula o som de "tick" ao trocar de música
+        function playSfx() {
+            // Em um ambiente real, você usaria new Audio('tick.mp3').play();
+            console.log("Tick - Mudou de música");
+        }
+
+        // Função para simular o início do jogo
+        function startGame() {
+            const overlay = document.getElementById('gameOverlay');
+            const loadingText = document.getElementById('loadingText');
+            overlay.style.display = 'flex';
+            
+            const selectedSong = songs[currentIndex];
+            loadingText.innerText = `Conectando controles... Preparando "${selectedSong.title}"`;
+            
+            // Simula o tempo de carregamento
+            setTimeout(() => {
+                loadingText.innerText = "Siga o treinador na tela! (Isto é apenas uma simulação Web UI)";
+            }, 3000);
+        }
+
+        function closeGame() {
+            document.getElementById('gameOverlay').style.display = 'none';
+        }
+
+        // Inicialização
+        renderCarousel();
+
+        // Suporte para setas do teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') moveCarousel(-1);
+            if (e.key === 'ArrowRight') moveCarousel(1);
+            if (e.key === 'Enter') startGame();
         });
-
-        alert("Todos os posts antigos foram apagados!");
-    } catch (e) {
-        alert("Erro ao apagar posts: " + e.message);
-    }
-})();
-</script>
+    </script>
 </body>
 </html>
